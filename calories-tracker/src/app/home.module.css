@@ -1,0 +1,7 @@
+.banner{
+    background: linear-gradient(135deg, rgba(118, 200, 71, 1) 0%, rgba(76, 175, 80, 1) 100%); /* Gradient background */
+    padding: 20px;
+    margin: 6px;
+    border-radius: 8px; 
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2); 
+}
