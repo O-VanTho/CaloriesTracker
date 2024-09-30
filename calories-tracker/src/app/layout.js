@@ -1,4 +1,3 @@
-import localFont from "next/font/local";
 import Navar from "@/components/Navar/Navar"
 import "./globals.css";
 

@@ -1,7 +1,9 @@
 import React from 'react'
 import styles from "./home.module.css"
 import Banner from '@/components/Banner/Banner'
+import { FaCamera } from "react-icons/fa";
 import StackedBarChart from '@/components/StackedBarChart/StackedBarChart'
+import PieChart from '@/components/PieChart/PieChart';
 
 function page() {
   return (
@@ -29,9 +31,13 @@ function page() {
           <p className='text-[12px]'>Scan your food and we will retrieve the macro</p>
           <button className='mt-5 text-[13px] text-center rounded bg-white text-black font-bold w-fit p-4 pt-2 pb-2'>Try now</button>
         </div>
-
         
+        <div className={styles.image}>
+          <FaCamera size={55} color='rgba(118, 200, 71, 1)'/>
+        </div>
       </div>
+
+      <PieChart dataSet={[40, 30, 30]} />
     </div>
   )
 }
