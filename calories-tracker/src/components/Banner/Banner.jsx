@@ -4,12 +4,13 @@ import PropTypes from 'prop-types';
 
 function Banner({ title, href, backgroundImage, customCss }) {
   return (
-    <div
+    <a
+      href={href}
       style={{ backgroundImage: `url(${backgroundImage})` }} 
       className={`${styles.banner} ${styles[customCss]}`} 
     >
-      <a href={href} className={styles.title}>{title}</a>
-    </div>
+      <p  className={styles.title}>{title}</p>
+    </a>
   )
 }
 

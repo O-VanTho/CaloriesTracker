@@ -1,3 +1,4 @@
+
 import React from 'react'
 import styles from "./home.module.css"
 import Banner from '@/components/Banner/Banner'
@@ -5,7 +6,7 @@ import { FaCamera } from "react-icons/fa";
 import StackedBarChart from '@/components/StackedBarChart/StackedBarChart'
 import PieChart from '@/components/PieChart/PieChart';
 
-function page() {
+function homePage() {
   return (
     <div className='container'>
       <div className='flex justify-between items-center h-[140px] m-[6px] gap-2'>
@@ -42,4 +43,4 @@ function page() {
   )
 }
 
-export default page
+export default homePage

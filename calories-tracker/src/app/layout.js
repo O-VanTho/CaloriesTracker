@@ -10,7 +10,7 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body
-        className="flex flex-col min-h-full bg-white mb-24"
+        className="flex flex-col min-h-screen bg-white mb-[5rem]"
       >
         {children}
         <Navar/>

@@ -1,0 +1,6 @@
+.container {
+    min-height: 100vh;
+    background: linear-gradient(to bottom, #6fbd42 30%, white 20%);
+    background-attachment: fixed; 
+    background-size: cover; 
+}

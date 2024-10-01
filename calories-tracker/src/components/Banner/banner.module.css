@@ -17,7 +17,6 @@
 
 .title {
     position: relative;
-    z-index: 2;
     font-size: 28px;
     font-weight: 700;
     color: white; 
@@ -32,7 +31,6 @@
     right: 0;
     bottom: 0;
     background: linear-gradient(135deg, rgba(118, 200, 71, 0.8), rgba(76, 175, 80, 0.6)); /* Gradient overlay */
-    z-index: 1;
     border-radius: 12px;
 }
 
@@ -44,6 +42,5 @@
     right: 0;
     bottom: 0;
     background: linear-gradient(135deg, rgba(0, 166, 255, 0.8), rgba(33, 150, 243, 0.6)); /* Gradient overlay */
-    z-index: 1;
     border-radius: 12px;
 }
