@@ -1,12 +1,8 @@
-import Navar from "@/components/Navar/Navar"
+import Navar from "@/components/Navar/Navar";
 import "./globals.css";
 
-export const metadata = {
-  title: "Calories Tracker",
-  description: "",
-};
-
 export default function RootLayout({ children }) {
+  
   return (
     <html lang="en">
       <body

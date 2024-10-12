@@ -2,8 +2,10 @@ const axios = require('axios');
 const express = require('express');
 const connectDB = require('./db');
 const cors = require('cors');
-const { signUp, checkIfUserExist } = require('./src/controllers/authControllers');
+const { signUp, checkIfUserExist, login, getCurrentUser } = require('./src/controllers/authControllers');
 const Food = require('./src/schema/Food');
+const Meal = require('@/schema/Meal');
+const UserDiary = require('@/schema/UserDiary');
 const app = express();
 
 app.use(cors());
@@ -14,9 +16,30 @@ app.use(express.urlencoded({ extended: true }));
 
 connectDB();
 
-app.post('/add-food-to-diary/:user/:diaryDate/:mealType', async (req, res) => {
+// app.post('/add-food-to-diary/:user/:diaryDate/:mealType', async (req, res) => {
+//     try {
+//         const { user, foodObject } = req.body;
+//         const diaryDate = req.params.diaryDate;
+//         const mealType = req.params.mealType;
 
-})
+//         const diary = UserDiary.findOne({ user });
+
+//         if (!diary) {
+//             const meal = Meal.create({
+//                 mealType: mealType,
+//                 foods: foodObject,
+//                 totalCalories: foodObject.nutrients.findOne({name: "calories"}),
+//                 totalProteins: foodObject.nutrient.findOne({name: "Protein"})
+
+//             })
+//         } else {
+
+//         }
+
+//     } catch (error) {
+
+//     }
+// })
 
 app.get('/add-food/:name', async (req, res) => {
     const foodName = req.params.name;
@@ -68,6 +91,10 @@ app.get('/add-food-by-id/:foodId', async (req, res) => {
 app.post('/check-email', checkIfUserExist);
 
 app.post('/create-user', signUp);
+
+app.post('/sign-in', login);
+
+app.get('/current-user', getCurrentUser);
 
 // 404 handler
 app.use((req, res) => {

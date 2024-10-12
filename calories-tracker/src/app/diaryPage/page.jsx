@@ -3,14 +3,24 @@
 import AddFoodToDiary from '@/components/AddFoodToDiary/AddFoodToDiary';
 import Calendar from '@/components/Calendar/Calendar';
 import DiaryMeal from '@/components/DiaryMeal/DiaryMeal';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 const diaryPage = () => {
-  const [user, setUser] = useState(null);
+
   const [diaryDate, setDiaryDate] = useState(null);
   const [openAddFood, setOpenAddFood] = useState(false);
   const [mealType, setMealType] = useState("");
 
+  useEffect(() => {
+    // Check if the token is present in localStorage
+    const token = localStorage.getItem('token');
+
+    if (!token) {
+      window.location.href = '/login';
+    } else{
+      console.log(token);
+    }
+  }, [])
 
   const handleDateChange = (date) => {
     setDiaryDate(date);

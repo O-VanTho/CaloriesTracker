@@ -24,7 +24,7 @@ function MyFoodFilterDynamic({ title, foodItems, onFoodAdded }) {
             </div>
 
             <div className='bg-white rounded-full p-2'
-              onClick={onFoodAdded(food.id)}
+              onClick={() => onFoodAdded(food.id)}
             >
               <FaPlus className="text-[#77c847]" size={16} />
             </div>

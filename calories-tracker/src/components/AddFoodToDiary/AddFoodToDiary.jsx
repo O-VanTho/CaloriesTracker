@@ -10,12 +10,43 @@ import axios from 'axios';
 function AddFoodToDiary({ diaryDate, mealType, totalCalo, onClose }) {
 
     const [activeFilter, setActiveFilter] = useState("All");
+    const [user, setUser] = useState(null);
+
+    useEffect(() => {
+        const fetchUser = async () => {
+            const token = localStorage.getItem('token');
+
+            if(!token){
+                console.log("Error token");
+                window.location.href = '/login';
+                return;
+            }
+
+            try {
+                const res = await axios.get("http://localhost:5000/current-user", {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                });
+                
+                setUser(res.data.user);
+            } catch (error) {
+                if(error.response && error.response.status === 401){
+                    console.log('Token expired or invalid, redirecting to login...');
+                    localStorage.removeItem('token');
+                    window.location.href = '/login';
+                }else {
+                    console.log("Other error:", error);
+                }
+            }
+        }
+
+        fetchUser();
+    }, [])
 
     const handleFilter = (filter) => {
         setActiveFilter(filter);
     }
-
-
 
     const [searchInput, setSearchInput] = useState("");
     const [loading, setLoading] = useState(false);
@@ -57,12 +88,13 @@ function AddFoodToDiary({ diaryDate, mealType, totalCalo, onClose }) {
 
     const handleAddFood = async (foodId) => {
         try {
-
+            const id = user.id;
             const response = await axios(`http://localhost:5000/add-food-by-id/${foodId}`);
 
             if (response.status === 200) {
-                const foodObject = response.data.food;
-
+                console.log("success log");
+                // const foodObject = response.data.food;
+                // const addFoodRes = await axios(`http://localhost:5000/add-food-to-diary/${diaryDate}/${mealType}`, {user, foodObject});
 
             } else {
                 console.log("Failed to add food: ", response.data.message);
@@ -71,28 +103,6 @@ function AddFoodToDiary({ diaryDate, mealType, totalCalo, onClose }) {
             console.log("Error to handle add food")
         }
     }
-    // const addFoodToDiary = (diaryDate, mealType, totalCalo) => {
-    //     const fetchData = async () => {
-    //         try {
-    //             const res = await fetch('http://localhost:3000/add-food-to-diary/john_doe/2024-10-04/Breakfast', {
-    //                 method: 'POST',
-    //                 headers: {
-    //                 'Content-Type': 'application/json',
-    //                 },
-    //                 body: JSON.stringify({
-    //                 foodId: '614b4a02e8c9f9b4b87f4537',
-    //                 quantity: 2
-    //                 }),
-    //             })
-
-    //             const data = await res.json();
-    //         } catch (error) {
-    //             console.log("Add food to diary failed", error);
-    //         }
-    //     }
-
-    //     fetchData();
-    // }
 
     return (
         <div className=''>
@@ -101,7 +111,7 @@ function AddFoodToDiary({ diaryDate, mealType, totalCalo, onClose }) {
                 <button onClick={() => onClose(false)}>
                     <IoMdArrowBack size={25} />
                 </button>
-                <p className='font-semibold'>{mealType}</p>
+                <p className='font-semibold'>{mealType} </p>
                 <div></div>
             </div>
 

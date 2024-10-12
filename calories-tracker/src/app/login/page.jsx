@@ -1,5 +1,6 @@
 "use client"
 
+import axios from 'axios';
 import React, { useState } from 'react';
 
 const page = () => {
@@ -12,15 +13,24 @@ const page = () => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        // Handle form submission logic here
-        console.log(formData);
+
+        try {
+            const res = await axios.post('http://localhost:5000/sign-in', { formData })
+
+            if(res.status == 200){
+                localStorage.setItem('token', res.data.token);
+                window.location.href = '/';   
+            }
+        } catch (error) {
+            console.log("Fail to Login", error);
+        }
     };
 
     return (
         <div className="fixed z-10 w-[-webkit-fill-available] flex justify-center items-center h-screen bg-gradient-to-r from-green-400 to-green-500">
-            <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-xs">
+            <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-xs text-gray-600">
                 <div className="text-center mb-6">
                     <a href="/sign-up" className="text-gray-500 px-3 py-2 font-semibold focus:outline-none">
                         Sign Up

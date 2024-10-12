@@ -4,7 +4,7 @@ import DatePicker from "react-datepicker";
 import styles from './calendar.module.css';
 import { IoMdArrowDropleft, IoMdArrowDropright } from "react-icons/io";
 import "react-datepicker/dist/react-datepicker.css";
-import { addDays, subDays, isToday, isTomorrow, isYesterday } from "date-fns";
+import { addDays, subDays } from "date-fns";
 
 function Calendar({ onDateChange, flexDirection = 'row' }) {
     const [selectedDate, setSelectedDate] = useState(new Date());
@@ -15,7 +15,6 @@ function Calendar({ onDateChange, flexDirection = 'row' }) {
 
     useEffect(() => {
         onDateChange(selectedDate);
-        formatDisplayDate();
     }, [selectedDate]);
 
     function handlePrevButton() {
@@ -28,25 +27,6 @@ function Calendar({ onDateChange, flexDirection = 'row' }) {
         setSelectedDate(newDay);
     }
 
-    // Function to format the selected date for display
-    const formatDisplayDate = () => {
-        console.log("format run")
-        if (isToday(selectedDate)) {
-            return "Today";
-        } else if (isTomorrow(selectedDate)) {
-            return "Tomorrow";
-        } else if (isYesterday(selectedDate)) {
-            return "Last day";
-        } else {
-            return selectedDate.toLocaleDateString('en-US', {
-                weekday: 'short',
-                month: 'long',
-                day: 'numeric',
-                year: 'numeric'
-            });
-        }
-    };
-
     return (
         <div className={`w-full flex gap-1 justify-between p-2 ${flexDirection}`}>
             <button onClick={handlePrevButton} className={`${styles.button} ${styles.leftBtn}`}>
@@ -58,7 +38,6 @@ function Calendar({ onDateChange, flexDirection = 'row' }) {
                 selected={selectedDate}
                 onChange={handleDateChange}
                 dateFormat="EEE, MMMM d, yyyy"
-                customInput={<CustomInput value={formatDisplayDate()}  />}
             />
             <button onClick={handleNextButton} className={`${styles.button} ${styles.rightBtn}`}>
                 <IoMdArrowDropright size={24} />
@@ -66,15 +45,5 @@ function Calendar({ onDateChange, flexDirection = 'row' }) {
         </div>
     );
 }
-
-const CustomInput = React.forwardRef(({ value, onClick }, ref) => (
-  <input
-      ref={ref}
-      value={value}
-      onClick={onClick}
-      readOnly
-      className="text-[#77c847] text-center border-none bg-transparent focus:outline-none"
-  />
-));
 
 export default Calendar;
