@@ -16,7 +16,7 @@ function AddFoodToDiary({ diaryDate, mealType, totalCalo, onClose }) {
         const fetchUser = async () => {
             const token = localStorage.getItem('token');
 
-            if(!token){
+            if (!token) {
                 console.log("Error token");
                 window.location.href = '/login';
                 return;
@@ -28,14 +28,14 @@ function AddFoodToDiary({ diaryDate, mealType, totalCalo, onClose }) {
                         Authorization: `Bearer ${token}`
                     }
                 });
-                
+
                 setUser(res.data.user);
             } catch (error) {
-                if(error.response && error.response.status === 401){
+                if (error.response && error.response.status === 401) {
                     console.log('Token expired or invalid, redirecting to login...');
                     localStorage.removeItem('token');
                     window.location.href = '/login';
-                }else {
+                } else {
                     console.log("Other error:", error);
                 }
             }
@@ -88,7 +88,6 @@ function AddFoodToDiary({ diaryDate, mealType, totalCalo, onClose }) {
 
     const handleAddFood = async (foodId) => {
         try {
-            const id = user.id;
             const response = await axios(`http://localhost:5000/add-food-by-id/${foodId}`);
 
             if (response.status === 200) {
@@ -154,15 +153,17 @@ function AddFoodToDiary({ diaryDate, mealType, totalCalo, onClose }) {
             {/* Food Display */}
             <div className="p-4">
                 {activeFilter === 'All' && (
-                    <MyFoodFilterDynamic title="History" foodItems={foodItems} onFoodAdded={handleAddFood} />
+                    <MyFoodFilterDynamic title="Search" foodItems={foodItems} onFoodAdded={handleAddFood} />
                 )}
                 {activeFilter === 'My Meals' && (
-                    <MyFoodFilterDynamic title="My Meals" foodItems={foodItems} />
+                    <MyFoodFilterDynamic title="My Meals" foodItems={foodItems}/>
                 )}
                 {activeFilter === 'My Recipes' && (
-                    <MyFoodFilterDynamic title="My Recipes" foodItems={foodItems} />
+                    <MyFoodFilterDynamic title="My Recipes" foodItems={foodItems}/>
                 )}
             </div>
+
+            
         </div>
     )
 }

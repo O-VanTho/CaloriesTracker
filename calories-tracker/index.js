@@ -4,8 +4,8 @@ const connectDB = require('./db');
 const cors = require('cors');
 const { signUp, checkIfUserExist, login, getCurrentUser } = require('./src/controllers/authControllers');
 const Food = require('./src/schema/Food');
-const Meal = require('@/schema/Meal');
-const UserDiary = require('@/schema/UserDiary');
+const Meal = require('./src/schema/Meal');
+const UserDiary = require('./src/schema/UserDiary');
 const app = express();
 
 app.use(cors());
@@ -87,6 +87,17 @@ app.get('/add-food-by-id/:foodId', async (req, res) => {
     }
 });
 
+app.get('/view-food', async (req, res) => {
+    const { foodId } = req.query;
+
+    try {
+        const foodData = await fetchFoodDataById(foodId);
+        res.status(200).json(foodData);
+    } catch (error) {
+        console.log("Error view Food");
+    }
+});
+
 // AuthControllers 
 app.post('/check-email', checkIfUserExist);
 
@@ -138,11 +149,22 @@ const fetchFoodDataById = async (foodId) => {
 // Save food data to the database
 const saveFoodData = async (foodData) => {
     const foodItems = foodData.foods.map(item => ({
-        name: item.description,
-        calories: item.foodNutrients.find(nutrient => nutrient.nutrientName === 'Energy')?.value || 0,
-        protein: item.foodNutrients.find(nutrient => nutrient.nutrientName === 'Protein')?.value || 0,
-        fat: item.foodNutrients.find(nutrient => nutrient.nutrientName === 'Total lipid (fat)')?.value || 0,
-        carbs: item.foodNutrients.find(nutrient => nutrient.nutrientName === 'Carbohydrate, by difference')?.value || 0,
+        name: foodData.description,
+        brand: foodData.brandName || '',
+        description: foodData.description || '',
+        category: foodData.foodCategory || 'Unknown',
+        servingSize: {
+            size: item.servingSize || 0,
+            unit: item.servingSizeUnit || 'g', // Assume grams if no unit is provided
+        },
+        nutrients: item.foodNutrients
+          ?.filter(nutrient => 
+            ['Energy', 'Protein', 'Total lipid (fat)', 'Carbohydrate, by difference'].includes(nutrient.nutrientName))
+          .map(nutrient => ({
+            name: nutrient.nutrientName,
+            unit: nutrient.unitName,
+            value: nutrient.value,
+          })) || []
     }));
 
     try {
@@ -154,12 +176,26 @@ const saveFoodData = async (foodData) => {
 };
 
 const saveFoodDataOneObject = async (foodData) => {
+    const nutrients = foodData.foodNutrients
+    ?.filter(nutrient => ['Energy', 'Protein', 'Total lipid (fat)', 'Carbohydrate, by difference'].includes(nutrient.nutrientName))
+    .map(nutrient => ({
+        name: nutrient.nutrientName,
+        unit: nutrient.unitName,
+        value: nutrient.value
+    })) || [];
+    
+    const servingSize = {
+        size: foodData.servingSize || 1,  
+        unit: foodData.servingSizeUnit || 'g'
+    };
+
     const foodItem = {
         name: foodData.description,
-        calories: foodData.foodNutrients?.find(nutrient => nutrient.nutrientName === 'Energy')?.value || 0,
-        protein: foodData.foodNutrients?.find(nutrient => nutrient.nutrientName === 'Protein')?.value || 0,
-        fat: foodData.foodNutrients?.find(nutrient => nutrient.nutrientName === 'Total lipid (fat)')?.value || 0,
-        carbs: foodData.foodNutrients?.find(nutrient => nutrient.nutrientName === 'Carbohydrate, by difference')?.value || 0,
+        brand: foodData.brandName || '',
+        description: foodData.description || '',
+        category: foodData.foodCategory || 'Unknown',
+        servingSize,
+        nutrients,
     };
 
     try {

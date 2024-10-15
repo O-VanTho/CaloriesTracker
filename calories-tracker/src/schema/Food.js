@@ -7,7 +7,6 @@ const NutrientSchema = new mongoose.Schema({
 });
 
 const FoodSchema = new mongoose.Schema({
-  id: { type: String, required: true},
   name: { type: String, required: true },        
   brand: { type: String },                      
   description: { type: String },               

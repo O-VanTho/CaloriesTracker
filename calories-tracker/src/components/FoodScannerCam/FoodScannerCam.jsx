@@ -87,7 +87,7 @@ const FoodScannerCam = ({ onClose }) => {
   useEffect(() => {
     const loadModel = async () => {
       try {
-        const loadedModel = await tf.loadLayersModel('https://storage.googleapis.com/tfjs-models/tfjs/efficientnet/b1/model.json');
+        const loadedModel = await tf.loadLayersModel('/food101_model_js/model.json');
         setModel(loadedModel);
       } catch (error) {
         console.log("Load model fail", error)
