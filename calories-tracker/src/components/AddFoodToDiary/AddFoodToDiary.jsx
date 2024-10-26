@@ -7,50 +7,40 @@ import OptionScan from '../OptionScan/OptionScan';
 import MyFoodFilterDynamic from '../MyFoodFilterDynamic/MyFoodFilterDynamic';
 import axios from 'axios';
 
-function AddFoodToDiary({ diaryDate, mealType, totalCalo, onClose }) {
+function AddFoodToDiary({ diaryDate, mealType, user, fetchDataDiary, onClose }) {
 
-    const [activeFilter, setActiveFilter] = useState("All");
-    const [user, setUser] = useState(null);
+    const [foodItems, setFoodItems] = useState([]);
+    const [activeFilter, setActiveFilter] = useState("all");
+    const [successDiag, setSuccessDiag] = useState(false);
 
     useEffect(() => {
-        const fetchUser = async () => {
-            const token = localStorage.getItem('token');
+        if(successDiag){
+            const timer = setTimeout(() => {
+                setSuccessDiag(false);
+            }, 3000)
 
-            if (!token) {
-                console.log("Error token");
-                window.location.href = '/login';
-                return;
-            }
-
-            try {
-                const res = await axios.get("http://localhost:5000/current-user", {
-                    headers: {
-                        Authorization: `Bearer ${token}`
-                    }
-                });
-
-                setUser(res.data.user);
-            } catch (error) {
-                if (error.response && error.response.status === 401) {
-                    console.log('Token expired or invalid, redirecting to login...');
-                    localStorage.removeItem('token');
-                    window.location.href = '/login';
-                } else {
-                    console.log("Other error:", error);
-                }
-            }
+            fetchDataDiary();
+            
+            return () => clearTimeout(timer);
         }
+    }, [successDiag])
 
-        fetchUser();
-    }, [])
+    
 
-    const handleFilter = (filter) => {
-        setActiveFilter(filter);
+    const handleFilter = async (filter) => {
+        try {
+            const res = await axios.get(`http://localhost:5000/get-${filter}`);
+            
+            if(res.status === 200){
+                setActiveFilter(filter);
+            }
+        } catch (error) {
+            console.log(error, "Filter Food data fail");            
+        }
     }
 
     const [searchInput, setSearchInput] = useState("");
     const [loading, setLoading] = useState(false);
-    const [foodItems, setFoodItems] = useState([]);
 
     const handleSearchHistory = async (e) => {
         e.preventDefault();
@@ -65,7 +55,6 @@ function AddFoodToDiary({ diaryDate, mealType, totalCalo, onClose }) {
             const apiKey = '20FnJUBnx3LNNqhalYcz5x7ZZfvFYImjXtcarKwF';
             const url = `https://api.nal.usda.gov/fdc/v1/foods/search?query=${searchInput}&api_key=${apiKey}`;
             const res = await axios.get(url);
-            console.log(res.data.foods)
             const foods = res.data.foods.map(food => {
                 const calories = food.foodNutrients?.find(nutrient => nutrient.nutrientName === "Energy")?.value || 0;
 
@@ -78,6 +67,7 @@ function AddFoodToDiary({ diaryDate, mealType, totalCalo, onClose }) {
                 };
             });
 
+            setActiveFilter("search");
             setFoodItems(foods);
         } catch (error) {
             console.log("handle search fetch fail", error)
@@ -86,20 +76,26 @@ function AddFoodToDiary({ diaryDate, mealType, totalCalo, onClose }) {
         }
     }
 
-    const handleAddFood = async (foodId) => {
+    const handleAddFood = async (foodId, quantity) => {
         try {
-            const response = await axios(`http://localhost:5000/add-food-by-id/${foodId}`);
+            const response = await axios.post(`http://localhost:5000/add-food-by-id/${foodId}`, {userId : user._id});
 
             if (response.status === 200) {
-                console.log("success log");
-                // const foodObject = response.data.food;
-                // const addFoodRes = await axios(`http://localhost:5000/add-food-to-diary/${diaryDate}/${mealType}`, {user, foodObject});
+                try {
+                    const addFoodRes = await axios.post(`http://localhost:5000/add-food-to-diary/${diaryDate}/${mealType}`, {userId: user._id, foodId, quantity});
 
+                    if(addFoodRes.status === 200){
+                        setSuccessDiag(true);
+                    }
+                } catch (error) {
+                    console.log("Error to handle log food to Diary", error);
+                }
+                
             } else {
                 console.log("Failed to add food: ", response.data.message);
             }
         } catch (error) {
-            console.log("Error to handle add food")
+            console.log("Error to handle add food", error);
         }
     }
 
@@ -127,13 +123,13 @@ function AddFoodToDiary({ diaryDate, mealType, totalCalo, onClose }) {
 
             {/* Filter */}
             <div className="flex justify-around text-sm font-semibold py-4">
-                <button onClick={() => handleFilter('All')} className={`p-1 border-b-2 border-white ${activeFilter === 'All' ? 'text-[#60a637] border-[#77c847]' : ''}`}>
+                <button onClick={() => handleFilter('all')} className={`p-1 border-b-2 border-white ${activeFilter === 'all' ? 'text-[#60a637] border-[#77c847]' : ''}`}>
                     All
                 </button>
-                <button onClick={() => handleFilter('My Meals')} className={`p-1 border-b-2 border-white ${activeFilter === 'My Meals' ? 'text-[#60a637] border-[#77c847]' : ''}`}>
+                <button onClick={() => handleFilter('my meals')} className={`p-1 border-b-2 border-white ${activeFilter === 'my meals' ? 'text-[#60a637] border-[#77c847]' : ''}`}>
                     My Meals
                 </button>
-                <button onClick={() => handleFilter('My Recipes')} className={`p-1 border-b-2 border-white ${activeFilter === 'My Recipes' ? 'text-[#60a637] border-[#77c847]' : ''}`}>
+                <button onClick={() => handleFilter('my recipes')} className={`p-1 border-b-2 border-white ${activeFilter === 'my recipes' ? 'text-[#60a637] border-[#77c847]' : ''}`}>
                     My Recipes
                 </button>
             </div>
@@ -152,13 +148,16 @@ function AddFoodToDiary({ diaryDate, mealType, totalCalo, onClose }) {
 
             {/* Food Display */}
             <div className="p-4">
-                {activeFilter === 'All' && (
+                {activeFilter === 'all' && (
+                    <MyFoodFilterDynamic title="All" foodItems={foodItems} />
+                )}
+                {activeFilter === 'search' && (
                     <MyFoodFilterDynamic title="Search" foodItems={foodItems} onFoodAdded={handleAddFood} />
                 )}
-                {activeFilter === 'My Meals' && (
+                {activeFilter === 'my meals' && (
                     <MyFoodFilterDynamic title="My Meals" foodItems={foodItems}/>
                 )}
-                {activeFilter === 'My Recipes' && (
+                {activeFilter === 'my recipes' && (
                     <MyFoodFilterDynamic title="My Recipes" foodItems={foodItems}/>
                 )}
             </div>

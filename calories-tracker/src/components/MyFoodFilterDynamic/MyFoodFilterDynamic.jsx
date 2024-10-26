@@ -15,17 +15,36 @@ function MyFoodFilterDynamic({ title, foodItems, onFoodAdded }) {
       })
 
       const food = res.data;
+      const labelNutrients = food.labelNutrients || {};
+      console.log(labelNutrients);
+
+      const nutrients = [
+        { name: 'Fat', value: labelNutrients.fat ? labelNutrients.fat.value : 0, unit: 'g' },
+        { name: 'Saturated Fat', value: labelNutrients.saturatedFat ? labelNutrients.saturatedFat.value : 0, unit: 'g' },
+        { name: 'Trans Fat', value: labelNutrients.transFat ? labelNutrients.transFat.value : 0, unit: 'g' },
+        { name: 'Cholesterol', value: labelNutrients.cholesterol ? labelNutrients.cholesterol.value : 0, unit: 'mg' },
+        { name: 'Sodium', value: labelNutrients.sodium ? labelNutrients.sodium.value : 0, unit: 'mg' },
+        { name: 'Carbohydrates', value: labelNutrients.carbohydrates ? labelNutrients.carbohydrates.value : 0, unit: 'g' },
+        { name: 'Fiber', value: labelNutrients.fiber ? labelNutrients.fiber.value : 0, unit: 'g' },
+        { name: 'Sugars', value: labelNutrients.sugars ? labelNutrients.sugars.value : 0, unit: 'g' },
+        { name: 'Protein', value: labelNutrients.protein ? labelNutrients.protein.value : 0, unit: 'g' },
+        { name: 'Calcium', value: labelNutrients.calcium ? labelNutrients.calcium.value : 0, unit: 'mg' },
+        { name: 'Iron', value: labelNutrients.iron ? labelNutrients.iron.value : 0, unit: 'mg' },
+        { name: 'Calories', value: labelNutrients.calories ? labelNutrients.calories.value : 0, unit: 'kcal' }
+      ];
+
+      const servingSize = {
+        size: food.servingSize || 1,
+        unit: food.servingSizeUnit || 'g'
+      };
+
       const data = {
         id: food.fdcId,
         name: food.description,
-        brand: food.brandOwner || 'Unknown Brand',
-        servingSize: food.servingSize?.size || 0,
-        unit: food.servingSize?.unit || '',
-        calories: food.foodNutrients?.find(nutrient => nutrient.nutrientName === 'Energy')?.value || 0,
-        carbs: food.foodNutrients?.find(nutrient => nutrient.nutrientName === 'Carbohydrate, by difference')?.value || 0,
-        fat: food.foodNutrients?.find(nutrient => nutrient.nutrientName === 'Total lipid (fat)')?.value || 0,
-        protein: food.foodNutrients?.find(nutrient => nutrient.nutrientName === 'Protein')?.value || 0,
-      };
+        brand: food.brandOwner || '',
+        servingSize,
+        nutrients
+        };
 
       setFoodData(data);
     } catch (error) {
@@ -55,7 +74,7 @@ function MyFoodFilterDynamic({ title, foodItems, onFoodAdded }) {
             </div>
 
             <div className='bg-white rounded-full p-2'
-              onClick={() => onFoodAdded(food.id)}
+              onClick={() => onFoodAdded(food.id, 1)}
             >
               <FaPlus className="text-[#77c847]" size={16} />
             </div>
@@ -64,7 +83,7 @@ function MyFoodFilterDynamic({ title, foodItems, onFoodAdded }) {
       </ul>
 
       {foodData !== null && (
-        <ViewFoodDetail foodItem={foodData} onClearFoodData={clearFoodData}/>
+        <ViewFoodDetail foodItem={foodData} onClickAddFood={onFoodAdded} onClearFoodData={clearFoodData} />
       )}
 
     </div>

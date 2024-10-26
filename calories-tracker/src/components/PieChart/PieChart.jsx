@@ -21,9 +21,9 @@ const PieChart = ({dataSet}) => {
 
         data: dataSet, //Data here
         backgroundColor: [
-          'rgba(118, 200, 71, 0.7)', 
-          'rgba(255, 99, 44, 0.7)', 
-          'rgba(0, 166, 255, 0.7)',  
+          'rgba(118, 200, 71, 0.9)', 
+          'rgba(255, 99, 44, 0.9)', 
+          'rgba(0, 166, 255, 0.9)',  
         ],
         borderColor: [
           'rgba(118, 200, 71, 1)',
