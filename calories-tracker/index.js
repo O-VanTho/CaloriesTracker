@@ -29,13 +29,13 @@ app.post('/get-meal-from-diary', async (req, res) => {
         });
 
         if (!diary) {
-            return;
+            return res.status(201).json({ message: "Diary not found" });
         }
 
         const meal = diary.meals[0]; 
 
         if (!meal) {
-            return;
+            return res.status(201).json({ message: "Meal not found" });
         }
 
         res.status(200).json({ message: "Success get meal", meal: meal });
@@ -45,6 +45,7 @@ app.post('/get-meal-from-diary', async (req, res) => {
         res.status(500).json({ message: "Error get meal" });
     }
 });
+
 
 
 app.post('/get-userdiary', async (req, res) => {

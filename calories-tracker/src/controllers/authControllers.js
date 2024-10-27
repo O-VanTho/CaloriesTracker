@@ -25,10 +25,34 @@ const signUp = async (req, res) => {
     const { formData, userInfo } = req.body;
     const { email, password } = formData;
     const { username, gender, age, height, weight, activeLevel, goal } = userInfo;
+ 
+    let BMR = 0;
+
+    if(gender === 'Male'){
+        BMR = 88.362 + (13.397 * weight) + (4.799 * height) - (5.677 * age);
+    }else {
+        BMR = 447.593 + (9.247 * weight) + (3.098 * height) - (4.330 * age);
+    }
+
+    if(activeLevel === 1){
+        BMR *= 1.2;
+    }else if(activeLevel === 2){
+        BMR *= 1.55;
+    }else if(activeLevel === 3){
+        BMR *= 1.725;
+    }
+
+    if(goal === "Weight Loss"){
+        BMR -= 500;
+    }else if(goal === "Weight Gain"){
+        BMR += 500;
+    }
+
+    BMR = Math.round(BMR);
 
     try {
         const passwordHash = await bcrypt.hash(password, 10);
-        const newUser = new User({ username, email, passwordHash, gender, age, height, weight, activeLevel, goal });
+        const newUser = new User({ username, email, passwordHash, gender, age, height, weight, activeLevel, goal, BMR});
         await newUser.save();
 
         return res.status(200).json({ message: 'User created successfully' });

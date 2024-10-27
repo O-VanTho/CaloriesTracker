@@ -66,6 +66,7 @@ const diaryPage = () => {
 
   const handleDateChange = (date) => {
     setDiaryDate(date);
+    setDataDiary(null);
   }
 
   const handleOpenAddFood = (mealType) => {
@@ -89,22 +90,20 @@ const diaryPage = () => {
       {/* Calories and Remaining Summary */}
       <div className="flex justify-between items-center py-4 px-6 bg-white text-[#77c847]">
         <div className="flex flex-col items-center">
-          <p className="text-lg font-semibold">1,710</p>
+          <p className="text-lg font-semibold">{user ? user.BMR : 0}</p>
           <p className="text-sm">Goal</p>
         </div>
         <p className="text-lg font-bold">-</p>
         <div className="flex flex-col items-center">
-          <p className="text-lg font-semibold">286</p>
+          <p className="text-lg font-semibold">{dataDiary ? dataDiary.totalCalories : 0}</p>
           <p className="text-sm">Food</p>
         </div>
-        {/* <p className="text-lg font-bold">+</p>
-        <div className="flex flex-col items-center">
-          <p className="text-lg font-semibold">0</p>
-          <p className="text-sm">Exercise</p>
-        </div> */}
+        
         <p className="text-lg font-bold">=</p>
         <div className="flex flex-col items-center">
-          <p className="text-lg font-semibold">1,424</p>
+          <p className="text-lg font-semibold">
+            {(dataDiary && user && user.BMR) ? user.BMR - (dataDiary.totalCalories || 0) : 0}
+          </p>
           <p className="text-sm">Remaining</p>
         </div>
       </div>
@@ -112,16 +111,16 @@ const diaryPage = () => {
       {/* Meal Sections */}
       <div className="">
         {/* Breakfast */}
-        <DiaryMeal mealType={"Breakfast"} dataDiary={dataDiary} total_calo={0} onOpenAddFood={handleOpenAddFood} />
+        <DiaryMeal mealType={"Breakfast"} dataDiary={dataDiary} diaryDate={diaryDate} total_calo={0} onOpenAddFood={handleOpenAddFood} />
 
         {/* Lunch */}
-        <DiaryMeal mealType={"Lunch"} dataDiary={dataDiary} total_calo={0} onOpenAddFood={handleOpenAddFood} />
+        <DiaryMeal mealType={"Lunch"} dataDiary={dataDiary} diaryDate={diaryDate} total_calo={0} onOpenAddFood={handleOpenAddFood} />
 
         {/* Dinner */}
-        <DiaryMeal mealType={"Dinner"} dataDiary={dataDiary} total_calo={0} onOpenAddFood={handleOpenAddFood} />
+        <DiaryMeal mealType={"Dinner"} dataDiary={dataDiary} diaryDate={diaryDate} total_calo={0} onOpenAddFood={handleOpenAddFood} />
 
         {/* Snacks */}
-        <DiaryMeal mealType={"Snacks"} dataDiary={dataDiary} total_calo={0} onOpenAddFood={handleOpenAddFood} />
+        <DiaryMeal mealType={"Snacks"} dataDiary={dataDiary} diaryDate={diaryDate} total_calo={0} onOpenAddFood={handleOpenAddFood} />
 
       </div>
 

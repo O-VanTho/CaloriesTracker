@@ -78,6 +78,11 @@ function AddFoodToDiary({ diaryDate, mealType, user, fetchDataDiary, onClose }) 
 
     const handleAddFood = async (foodId, quantity) => {
         try {
+            if(!user){
+                console.log("user not available");
+                return;
+            }
+
             const response = await axios.post(`http://localhost:5000/add-food-by-id/${foodId}`, {userId : user._id});
 
             if (response.status === 200) {

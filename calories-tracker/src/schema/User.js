@@ -10,6 +10,7 @@ const UserSchema = new mongoose.Schema({
   weight: { type: Number, required: true },
   activeLevel: { type: Number },
   goal: { type: String, enum: ['Weight Loss', 'Maintenance', 'Weight Gain'], required: true },
+  BMR: {type: Number},
   createdAt: { type: Date, default: Date.now },
   updatedAt: { type: Date, default: Date.now }
 });
