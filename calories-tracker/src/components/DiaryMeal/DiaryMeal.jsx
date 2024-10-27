@@ -15,7 +15,7 @@ function DiaryMeal({ diaryDate, mealType, dataDiary, onOpenAddFood }) {
       }
     }
 
-    setMealData(null);
+    setMealData(null)
 
     if (dataDiary) {
       getMealData();
