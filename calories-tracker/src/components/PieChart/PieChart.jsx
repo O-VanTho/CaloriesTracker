@@ -11,9 +11,8 @@ import {
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
-const PieChart = ({dataSet}) => {
-  const total_calories = dataSet.reduce((acc, currentValue) => acc + currentValue, 0);
-  
+const PieChart = ({ calo, dataSet }) => {
+
   const data = {
     labels: ['Carbs', 'Fat', 'Protein'],
     datasets: [
@@ -21,9 +20,9 @@ const PieChart = ({dataSet}) => {
 
         data: dataSet, //Data here
         backgroundColor: [
-          'rgba(118, 200, 71, 0.9)', 
-          'rgba(255, 99, 44, 0.9)', 
-          'rgba(0, 166, 255, 0.9)',  
+          'rgba(118, 200, 71, 0.9)',
+          'rgba(255, 99, 44, 0.9)',
+          'rgba(0, 166, 255, 0.9)',
         ],
         borderColor: [
           'rgba(118, 200, 71, 1)',
@@ -46,7 +45,7 @@ const PieChart = ({dataSet}) => {
             size: 14,  // Make the legend text larger
             weight: 'bold',  // Bold legend text for modern look
           },
-          boxWidth: 20, 
+          boxWidth: 20,
         },
       },
       tooltip: {
@@ -64,10 +63,21 @@ const PieChart = ({dataSet}) => {
       <h3 style={{ textAlign: 'center', fontSize: '18px', fontWeight: 'bold', color: 'black' }}>
         Today Macros
       </h3>
-      <p className='text-black text-center mb-3'>{total_calories} calo</p>
-      <div className='' style={{ width: '100%', height: '200px'}}> {/* Chart size */}
-        <Pie data={data} options={options} />
-      </div>
+
+      {calo && dataSet ? (
+        <div>
+          <p className='text-black text-center mb-3'>{calo} calo</p>
+        
+          <div className='' style={{ width: '100%', height: '200px' }}> {/* Chart size */}
+            <Pie data={data} options={options} />
+          </div>
+        </div>
+      ) : (
+        <div className='text-black p-3 flex items-center flex-col gap-1'>
+          <p>NO DATA</p>
+          <p className='text-gray-500'>You haven't log any food today</p>
+        </div>
+      )}
     </div>
   );
 };

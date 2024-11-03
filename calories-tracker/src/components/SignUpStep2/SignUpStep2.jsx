@@ -55,7 +55,7 @@ const SignUpStep2 = ({ formData, prevToStep1 }) => {
         setStep(step - 1);
     }
     return (
-        <div className='fixed bg-white w-full h-full p-2 text-black'>
+        <div className='fixed bg-white w-full h-full p-2 text-black z-10'>
             {step === 1 && (
                 <div className='flex flex-col justify-between h-full'>
                     <div>

@@ -35,7 +35,7 @@ function SignUpStep1({nextStep}) {
     }
 
     return (
-        <div className="bg-white p-8 rounded-lg shadow-lg text-gray-500 w-full max-text-gray-500 max-w-xs">
+        <div className="bg-white p-8 rounded-lg shadow-lg text-gray-500 w-full max-text-gray-500 max-w-xs z-10">
             <div className="text-center mb-6">
                 <a className="text-[#77c847] px-3 py-2 font-semibold border-b-2 border-[#77c847] focus:outline-none">
                     Sign Up

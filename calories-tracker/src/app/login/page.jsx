@@ -2,6 +2,7 @@
 
 import axios from 'axios';
 import React, { useState } from 'react';
+import styles from './login.module.css'
 
 const page = () => {
     const [formData, setFormData] = useState({
@@ -29,8 +30,9 @@ const page = () => {
     };
 
     return (
-        <div className="fixed z-10 w-[-webkit-fill-available] flex justify-center items-center h-screen bg-gradient-to-r from-green-400 to-green-500">
-            <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-xs text-gray-600">
+        <div className={styles.area}>
+            
+            <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-xs text-gray-600 z-10">
                 <div className="text-center mb-6">
                     <a href="/sign-up" className="text-gray-500 px-3 py-2 font-semibold focus:outline-none">
                         Sign Up
@@ -75,6 +77,19 @@ const page = () => {
                     </div>
                 </form>
             </div>
+
+            <ul className={styles.circles}>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+            </ul>
         </div>
     );
 };

@@ -14,23 +14,23 @@ import {
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
-const StackedBarChart = () => {
+const StackedBarChart = ({dataCarb, dataFat, dataProtein}) => {
   const data = {
     labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
     datasets: [
       {
         label: 'Carb',
-        data: [50, 40, 60, 70, 85, 60, 50],
+        data: dataCarb,
         backgroundColor: 'rgba(118, 200, 71, 0.9)', 
       },
       {
         label: 'Fat',
-        data: [30, 50, 80, 60, 75, 50, 40],
+        data: dataFat,
         backgroundColor: 'rgba(255, 99, 44, 0.9)', 
       },
       {
         label: 'Protein',
-        data: [20, 30, 40, 50, 60, 40, 30],
+        data: dataProtein,
         backgroundColor: 'rgba(0, 166, 255, 0.9)', 
       },
     ],

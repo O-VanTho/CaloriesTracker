@@ -34,7 +34,7 @@ const FoodScannerCam = ({ onClose }) => {
 
   const processFoodDetection = async () => {
 
-    if (!isProcessing && webcamRef.current && model) {
+    if (!isProcessing && webcamRef.current) {
       setIsProcessing(true);
 
       const imageSrc = webcamRef.current.getScreenshot();
@@ -55,7 +55,7 @@ const FoodScannerCam = ({ onClose }) => {
             .div(255.0);
   
           const predictions = await model.predict(tensorImg).data();
-  
+          console.log(predictions);
           const detectedFood = Array.from(predictions)
             .map((prob, index) => ({
               className: foodItems[index],
@@ -64,7 +64,9 @@ const FoodScannerCam = ({ onClose }) => {
             .filter(item => item.probability > 0.1) // Set a threshold for detection
             .sort((a, b) => b.probability - a.probability) // Sort by probability
             .map(item => item.className);
-  
+            
+            console.log(detectedFood);
+
           if (detectedFood.length > 0) {
             console.log('Detected food:', detectedFood);
             setListFood(prevFood => {
@@ -74,6 +76,8 @@ const FoodScannerCam = ({ onClose }) => {
             
             detectedFood.forEach(fetchNutritionFacts);
             console.log("detectedFood Loop RUN");
+          }else{
+            console.log("No food detected");
           }
         } catch (error) {
           console.error('Error detecting food:', error);
@@ -87,7 +91,7 @@ const FoodScannerCam = ({ onClose }) => {
   useEffect(() => {
     const loadModel = async () => {
       try {
-        const loadedModel = await tf.loadLayersModel('/food101_model_js/model.json');
+        const loadedModel = await tf.loadLayersModel('/model_tfjs/model.json');
         setModel(loadedModel);
       } catch (error) {
         console.log("Load model fail", error)
@@ -99,11 +103,13 @@ const FoodScannerCam = ({ onClose }) => {
 
   useEffect(() => {
     const interval = setInterval(() => {
-      processFoodDetection();
+      if (model) { 
+        processFoodDetection();
+      }
     }, 2000);
-
+  
     return () => clearInterval(interval);
-  }, [isProcessing]);
+  }, [model, isProcessing]);
 
   return (
     <div className="relative h-screen bg-gray-900">
