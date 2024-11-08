@@ -11,6 +11,10 @@ function Page() {
     const [preview, setPreview] = useState(null);
     const [dialog, setDialog] = useState(false);
 
+    const onClose = () => {
+        window.history.back();
+    }
+
     useEffect(() => {
         // Check if the token is present in localStorage
         const fetchUser = async () => {
@@ -46,11 +50,22 @@ function Page() {
     const [postData, setPostData] = useState({
         title: '',
         category: '',
+        food: '',
         timeCost: '',
         content: '',
         difficulty: '',
         image: ''
     });
+    
+    useEffect(() => {
+        if(window === undefined){
+            return;
+        }
+
+        const params = new URLSearchParams(window.location.search);
+        const mealType  = params.get("mealType");
+        setPostData({ ...postData, category: mealType });
+    }, []);
 
     const handleImageChange = (e) => {
         const file = e.target.files[0];
@@ -87,9 +102,9 @@ function Page() {
             <div className='flex justify-between text-black'>
                 <h1 className='text-3xl w-[220px]'>Share your own Recipe</h1>
 
-                <a href='/recipesPage/recipesMeal' >
+                <button onClick={onClose}>
                     <IoMdClose className='text-black' size={25} />
-                </a>
+                </button>
             </div>
 
             <div className='flex flex-col gap-4 text-sm'>
@@ -99,7 +114,18 @@ function Page() {
 
             <div className='flex flex-col gap-4 text-sm'>
                 <label className='text-black'>Category</label>
-                <input name='category' value={postData.category} onChange={handleChange} className='text-gray-500 py-3 px-4' placeholder='Enter type of food (pancake, oatmeal, etc...)' />
+                <select name='category' value={postData.category} onChange={handleChange} className='text-gray-500 py-3 px-4'>
+                    <option hidden>Select category</option>
+                    <option value="Oat Meal">Oat Meal</option>
+                    <option value="Breakfast">Breakfast</option>
+                    <option value="Dinner">Dinner</option>
+                    <option value="Snack">Snack</option>
+                </select>
+            </div>
+
+            <div className='flex flex-col gap-4 text-sm'>
+                <label className='text-black'>Food</label>
+                <input name='food' value={postData.food} onChange={handleChange} className='text-gray-500 py-3 px-4' placeholder='Enter type of food (pancake, oatmeal, etc...)' />
             </div>
 
             <div className='flex flex-col gap-4 text-sm'>

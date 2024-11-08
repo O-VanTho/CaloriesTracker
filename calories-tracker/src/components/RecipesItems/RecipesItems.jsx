@@ -6,7 +6,7 @@ import { IoLayers } from "react-icons/io5";
 
 function RecipesItems({title, author, categoryFood, timeCost, difficulty, rate, image}) {
   return (
-    <div className='w-full flex mx-3 rounded-xl overflow-hidden relative border-[5px]'>
+    <div className='w-full flex mx-3 rounded-xl overflow-hidden relative border-[5px] mb-3'>
         <div className='relative flex-1'>
             <Image src={'/images/breakfast/bf-2.jpeg'} alt='' fill />
         </div>

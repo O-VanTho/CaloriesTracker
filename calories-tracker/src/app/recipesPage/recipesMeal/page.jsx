@@ -1,17 +1,37 @@
 'use client'
 
 import Image from 'next/image';
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { IoMdArrowBack } from "react-icons/io"
 import styles from '../../recipesPage/recipes.module.css'
 import RecipesItems from '@/components/RecipesItems/RecipesItems';
 import { CiCirclePlus } from "react-icons/ci";
-import axios from 'axios';
 
-function page({ mealType, urlImage }) {
+function page() {
+    
+    const [mealType, setMealType] = useState(null);
+    const [urlImage, setUrlImage] = useState(null);
+
+    useEffect(() => {
+        if(window === undefined){
+            return;
+        }
+
+        const params = new URLSearchParams(window.location.search);
+        setMealType(params.get("mealType"));
+        setUrlImage(params.get("urlImage"));
+    }, []);
     
     const onClose = () => {
         window.history.back();
+    }
+
+    if(!mealType || !urlImage){
+        return (
+            <div className='flex justify-center w-3 items-center'>
+                Loading...
+            </div>
+        )
     }
 
     return (
@@ -22,15 +42,15 @@ function page({ mealType, urlImage }) {
                         <IoMdArrowBack className='text-black' size={25} />
                     </button>
 
-                    <label className='text-black text-2xl'>{mealType}Breakfast</label>
+                    <label className='text-black text-2xl'>{mealType}</label>
                 </div>
 
                 <div className='w-[100px] relative'>
-                    <Image src={'/images/breakfast/ba.png'} alt='' fill />
+                    <Image src={urlImage} alt='' fill/>
                 </div>
             </div>
 
-            <a href='/recipesPage/recipesMeal/newPost' className='flex justify-end'>
+            <a href={`/recipesPage/recipesMeal/newPost?mealType=${encodeURIComponent(mealType)}`} className='flex justify-end'>
                 <CiCirclePlus size={40} className='text-gray-500 mr-3 hover:text-green-600'/>
             </a>
 
