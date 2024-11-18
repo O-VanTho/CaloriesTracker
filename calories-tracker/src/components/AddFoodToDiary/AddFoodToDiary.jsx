@@ -42,13 +42,14 @@ function AddFoodToDiary({ diaryDate, mealType, user, fetchDataDiary, onClose }) 
     const [searchInput, setSearchInput] = useState("");
     const [loading, setLoading] = useState(false);
 
-    const handleSearchHistory = async (e) => {
+    const handleSearch = async (e) => {
         e.preventDefault();
 
         if (!searchInput.trim()) {
             return;
         }
 
+        setActiveFilter(null);
         setLoading(true);
 
         try {
@@ -116,7 +117,7 @@ function AddFoodToDiary({ diaryDate, mealType, user, fetchDataDiary, onClose }) 
             </div>
 
             {/* Search Bar */}
-            <form onSubmit={handleSearchHistory} className="p-4 pb-0">
+            <form onSubmit={handleSearch} className="p-4 pb-0">
                 <input
                     type="text"
                     value={searchInput}
@@ -134,8 +135,8 @@ function AddFoodToDiary({ diaryDate, mealType, user, fetchDataDiary, onClose }) 
                 <button onClick={() => handleFilter('my meals')} className={`p-1 border-b-2 border-white ${activeFilter === 'my meals' ? 'text-[#60a637] border-[#77c847]' : ''}`}>
                     My Meals
                 </button>
-                <button onClick={() => handleFilter('my recipes')} className={`p-1 border-b-2 border-white ${activeFilter === 'my recipes' ? 'text-[#60a637] border-[#77c847]' : ''}`}>
-                    My Recipes
+                <button onClick={() => handleFilter('my recipies')} className={`p-1 border-b-2 border-white ${activeFilter === 'my recipies' ? 'text-[#60a637] border-[#77c847]' : ''}`}>
+                    My recipies
                 </button>
             </div>
 
@@ -153,6 +154,9 @@ function AddFoodToDiary({ diaryDate, mealType, user, fetchDataDiary, onClose }) 
 
             {/* Food Display */}
             <div className="p-4">
+                {loading && (
+                    <div className='text-gray-500 text-lg'>Loading...</div>
+                )}
                 {activeFilter === 'all' && (
                     <MyFoodFilterDynamic title="All" foodItems={foodItems} />
                 )}
@@ -162,8 +166,8 @@ function AddFoodToDiary({ diaryDate, mealType, user, fetchDataDiary, onClose }) 
                 {activeFilter === 'my meals' && (
                     <MyFoodFilterDynamic title="My Meals" foodItems={foodItems}/>
                 )}
-                {activeFilter === 'my recipes' && (
-                    <MyFoodFilterDynamic title="My Recipes" foodItems={foodItems}/>
+                {activeFilter === 'my recipies' && (
+                    <MyFoodFilterDynamic title="My recipies" foodItems={foodItems}/>
                 )}
             </div>
 

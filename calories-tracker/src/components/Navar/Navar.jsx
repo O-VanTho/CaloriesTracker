@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useEffect, useState } from 'react';
-import { FaHome, FaBook, FaQrcode, FaUtensils, FaCog } from 'react-icons/fa';
+import { FaHome, FaBook, FaQrcode, FaUtensils, FaUser } from 'react-icons/fa';
 import styles from "./navar.module.css"
 import FoodScannerCam from '../FoodScannerCam/FoodScannerCam';
 
@@ -41,7 +41,7 @@ function Navar() {
         </a>
 
         <a href='/settingPage' className={styles.btn_nav}>
-          <FaCog className={`mx-auto text-xl ${isActive('/settingPage')}`} />
+          <FaUser className={`mx-auto text-xl ${isActive('/settingPage')}`} />
         </a>
 
       </div>

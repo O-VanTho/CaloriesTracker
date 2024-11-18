@@ -16,7 +16,6 @@ function Page() {
     }
 
     useEffect(() => {
-        // Check if the token is present in localStorage
         const fetchUser = async () => {
             const token = localStorage.getItem('token');
 
@@ -56,15 +55,15 @@ function Page() {
         difficulty: '',
         image: ''
     });
-    
+
     useEffect(() => {
-        if(window === undefined){
+        if (window === undefined) {
             return;
         }
 
         const params = new URLSearchParams(window.location.search);
-        const mealType  = params.get("mealType");
-        setPostData({ ...postData, category: mealType });
+        const category = params.get("category");
+        setPostData({ ...postData, category: category });
     }, []);
 
     const handleImageChange = (e) => {
@@ -72,14 +71,14 @@ function Page() {
         if (file) {
             setImage(file);
             setPreview(URL.createObjectURL(file));
-    
+
             const reader = new FileReader();
             reader.onloadend = () => {
-                const base64String = reader.result; 
+                const base64String = reader.result;
                 setPostData({ ...postData, image: base64String });
             };
-    
-            reader.readAsDataURL(file); 
+
+            reader.readAsDataURL(file);
         }
     };
 
@@ -89,9 +88,23 @@ function Page() {
 
     const addPost = async () => {
         try {
-            const res = await axios.post('http://localhost:5000/create_post', {postData, userId: user._id});
+            const res = await axios.post('http://localhost:5000/create_post', { postData, userId: user._id });
 
-            setPostData(res.data.post);
+            if (res.status === 200) {
+                setDialog(true);
+
+                setPostData({
+                    title: '',
+                    category: '',
+                    food: '',
+                    timeCost: '',
+                    content: '',
+                    difficulty: '',
+                    image: ''
+                });
+
+                setTimeout(() => setDialog(false), 2000);
+            }
         } catch (error) {
             console.log("Error fetching add Post", error);
         }
@@ -100,7 +113,7 @@ function Page() {
     return (
         <div className='px-4 py-6 flex flex-col gap-8'>
             <div className='flex justify-between text-black'>
-                <h1 className='text-3xl w-[220px]'>Share your own Recipe</h1>
+                <h1 className='text-3xl w-[220px]'>Share your own recipie</h1>
 
                 <button onClick={onClose}>
                     <IoMdClose className='text-black' size={25} />
@@ -109,7 +122,7 @@ function Page() {
 
             <div className='flex flex-col gap-4 text-sm'>
                 <label className='text-black'>Name of Food</label>
-                <input name='title' value={postData.title} onChange={handleChange} className='text-gray-500 py-3 px-4' placeholder='Enter a name for your recipe' />
+                <input name='title' value={postData.title} onChange={handleChange} className='text-gray-500 py-3 px-4' placeholder='Enter a name for your recipie' />
             </div>
 
             <div className='flex flex-col gap-4 text-sm'>
@@ -157,7 +170,7 @@ function Page() {
                 <textarea
                     name='content' value={postData.content} onChange={handleChange}
                     className='text-gray-500 py-3 px-4 h-32'
-                    placeholder='Write your recipe instructions here...'
+                    placeholder='Write your recipie instructions here...'
                 />
             </div>
 
@@ -167,7 +180,10 @@ function Page() {
 
             {dialog && (
                 <div className='flex flex-col justify-center items-center fixed h-screen w-full bg-white'>
-                    <FaCircleCheck />
+                    <div className='flex flex-col items-center'>
+                        <FaCircleCheck className='text-green-500' size={60} />
+                        <p className='text-xl mt-4 text-black'>Post added successfully!</p>
+                    </div>
                 </div>
             )}
         </div>

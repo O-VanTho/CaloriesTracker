@@ -34,7 +34,7 @@
     border-radius: 12px;
 }
 
-.recipes_overlay::before {
+.recipies_overlay::before {
     content: '';
     position: absolute;
     top: 0;

@@ -2,7 +2,7 @@ import Image from 'next/image'
 import React from 'react'
 import styles from './recipesOption.module.css'
 
-function RecipesOption({ title, image, rating }) {
+function RecipiesOption({ title, image, rating }) {
   return (
     <div className='relative w-full h-full'>
       {/* Image */}
@@ -31,4 +31,4 @@ function RecipesOption({ title, image, rating }) {
   )
 }
 
-export default RecipesOption;
+export default RecipiesOption;

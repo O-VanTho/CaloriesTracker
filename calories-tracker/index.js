@@ -7,6 +7,7 @@ const Food = require('./src/schema/Food');
 const Meal = require('./src/schema/Meal');
 const UserDiary = require('./src/schema/UserDiary');
 const Post = require('./src/schema/Post');
+const User = require('./src/schema/User');
 const app = express();
 
 app.use(cors());
@@ -17,7 +18,7 @@ app.use(express.urlencoded({ extended: true }));
 
 connectDB();
 
-// 
+// Posts
 app.post('/create_post', async (req, res) => {
     try {
         const { postData, userId } = req.body;
@@ -39,13 +40,38 @@ app.post('/create_post', async (req, res) => {
 
         await newPost.save();
 
-        res.status(200).json({message: "Create post success", post: newPost});
+        res.status(200).json({ message: "Create post success", post: newPost });
     } catch (error) {
-        res.status(500).json({message: "Error to create post"});
+        res.status(500).json({ message: "Error to create post" });
     }
 })
 
+app.get('/get-posts/:category', async (req, res) => {
+    const category = req.params.category;
 
+    try {
+        const posts = await Post.find({ category })
+            .populate({ path: 'author', select: 'username' });
+
+        res.status(200).json({ message: "Get Posts success", posts: posts });
+    } catch (error) {
+        console.log("Error get posts", error);
+        res.status(500).json({ message: "Error" })
+    }
+})
+
+app.get('/get-post/:postId', async (req, res) => {
+    const postId = req.params.postId;
+
+    try {
+        const post = await Post.findById(postId).populate({ path: 'author', select: 'username' });
+
+        res.status(200).json({message: "Get post success", post: post})
+    } catch (error) {
+        console.log("Error get post content", error);
+        res.status(500).json({ message: "Error" })
+    }
+})
 // 
 app.post('/get-meal-from-diary', async (req, res) => {
     try {
@@ -80,24 +106,25 @@ app.post('/get-meal-from-diary', async (req, res) => {
 app.post('/get-diary-week', async (req, res) => {
     try {
         const { userId } = req.body;
-
-        const diaryWeekly = Array(7).fill(null);
+        
         const now = new Date();
-        const dayOfWeek = now.getUTCDay(); // Get current day in UTC
+        const dayOfWeek = now.getUTCDay(); // Get the current day in UTC
         const startOfWeek = new Date(now);
-        startOfWeek.setUTCDate(now.getUTCDate() - dayOfWeek); // Set to start of the week (Sunday)
-
-        for (let i = 0; i < 7; i++) {
+        startOfWeek.setUTCDate(now.getUTCDate() - (dayOfWeek === 0 ? 6 : dayOfWeek - 1)); // If it's Sunday (0), go back 6 days, otherwise subtract (dayOfWeek - 1)
+        
+        // Create an array of promises to fetch each day's diary entry
+        const diaryPromises = Array.from({ length: 7 }, (_, i) => {
             const diaryDate = new Date(startOfWeek);
             diaryDate.setUTCDate(startOfWeek.getUTCDate() + i);
 
+            // Use UTC methods to set the start and end of each day
             const startOfDay = new Date(diaryDate);
-            startOfDay.setUTCHours(0, 0, 0, 0);
+            startOfDay.setUTCHours(0, 0, 0, 0); // Start of the day at 00:00:00 UTC
 
             const endOfDay = new Date(diaryDate);
-            endOfDay.setUTCHours(23, 59, 59, 999);
+            endOfDay.setUTCHours(23, 59, 59, 999); // End of the day at 23:59:59.999 UTC
 
-            const diaryDaily = await UserDiary.findOne({
+            return UserDiary.findOne({
                 user: userId,
                 date: { $gte: startOfDay, $lt: endOfDay }
             }).populate({
@@ -106,19 +133,18 @@ app.post('/get-diary-week', async (req, res) => {
                     path: 'foods.food'
                 }
             });
+        });
 
-            if (diaryDaily) {
-                diaryWeekly[i] = diaryDaily;
-            }
-        }
+        // Resolve all promises in parallel
+        const diaryWeekly = await Promise.all(diaryPromises);
 
-        res.status(200).json({ message: "Success api diary week", diaryWeekly: diaryWeekly });
+        res.status(200).json({ message: "Success api diary week", diaryWeekly });
     } catch (error) {
-        res.status(500).json({ message: "Error api diary week" }, error);
+        console.error("Error in fetching weekly diary:", error);
+        res.status(500).json({ message: "Error api diary week", error });
     }
+});
 
-
-})
 
 app.post('/get-userdiary', async (req, res) => {
     try {
@@ -148,12 +174,17 @@ app.post('/add-food-to-diary/:diaryDate/:mealType', async (req, res) => {
         const endOfDay = new Date(diaryDate.setUTCHours(23, 59, 59, 999));
         const mealType = req.params.mealType;
 
-        const foodObject = await Food.findOne({ foodId });
+        const foodObject = await Food.findOne({ foodId: foodId });
 
-        const totalCalories = (foodObject.nutrients.find(nutrient => nutrient.name === "Calories")?.value || 0) * quantity;
-        const totalProteins = (foodObject.nutrients.find(nutrient => nutrient.name === "Protein")?.value || 0) * quantity;
-        const totalCarbs = (foodObject.nutrients.find(nutrient => nutrient.name === "Carbohydrates")?.value || 0) * quantity;
-        const totalFats = (foodObject.nutrients.find(nutrient => nutrient.name === "Fat")?.value || 0) * quantity;
+        const calculateNutrients = (nutrientName) => {
+            const nutrientValue = (foodObject.nutrients.find(nutrient => nutrient.name === nutrientName)?.value || 0) * quantity;
+            return Math.round(nutrientValue * 100) / 100;
+        };
+
+        const totalCalories = calculateNutrients("Calories");
+        const totalProteins = calculateNutrients("Protein");
+        const totalCarbs = calculateNutrients("Carbohydrates");
+        const totalFats = calculateNutrients("Fat");
 
         let diary = await UserDiary.findOne({
             user: userId,
@@ -219,7 +250,7 @@ app.post('/add-food-to-diary/:diaryDate/:mealType', async (req, res) => {
 
             diary.totalCalories += totalCalories;
             diary.totalProteins += totalProteins,
-                diary.totalCarbs += totalCarbs;
+            diary.totalCarbs += totalCarbs;
             diary.totalFats += totalFats;
 
             await diary.save();
@@ -291,6 +322,30 @@ app.get('/view-food', async (req, res) => {
 
 // });
 
+app.post('/update-user', async (req, res) => {
+    const { user } = req.body;
+
+    try {
+        // Find and update the user with the new information
+        const updatedUser = await User.findByIdAndUpdate(user._id, {
+            height: user.height,
+            weight: user.weight,
+            age: user.age,
+            BMR: user.BMR,
+            goal: user.goal,
+            activeLevel: user.activeLevel,
+            image: user.image, // save the new Base64 avatar
+        }, { new: true });
+
+        if (!updatedUser) return res.status(404).send("User not found");
+
+        res.status(200).json({ message: 'User updated successfully', user: updatedUser });
+    } catch (error) {
+        console.error("Error updating user:", error);
+        res.status(500).json({ error: "Internal server error" });
+    }
+})
+
 // AuthControllers 
 app.post('/check-email', checkIfUserExist);
 
@@ -323,7 +378,7 @@ const filterFoodData = async (filterType, userId) => {
             return foodData;
         } else if (filterType === 'my meals') {
 
-        } else if (filterType === 'my recipes') {
+        } else if (filterType === 'my recipies') {
 
         }
 

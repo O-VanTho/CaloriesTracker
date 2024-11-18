@@ -123,10 +123,10 @@ function homePage() {
           customCss='diary_overlay'
         />
         <Banner
-          title='Recipes'
+          title='recipies'
           href='/recipesPage'
           backgroundImage='/images/recipes-banner.jpeg'
-          customCss='recipes_overlay'
+          customCss='recipies_overlay'
         />
       </div>
 

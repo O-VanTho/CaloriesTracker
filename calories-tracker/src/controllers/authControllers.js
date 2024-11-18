@@ -1,6 +1,7 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const User = require('../schema/User');
+const path = require('path');
 require('dotenv').config();
 
 const checkIfUserExist = async (req, res) => {
@@ -50,9 +51,28 @@ const signUp = async (req, res) => {
 
     BMR = Math.round(BMR);
 
+    const defaultAvatarPath = path.resolve(__dirname, 'public/images/avatar.png');
+    const DEFAULT_AVATAR = imageToBase64(defaultAvatarPath);
+
+    if (!DEFAULT_AVATAR) {
+        return res.status(500).json({ message: 'Error loading default avatar image' });
+    }
+
     try {
         const passwordHash = await bcrypt.hash(password, 10);
-        const newUser = new User({ username, email, passwordHash, gender, age, height, weight, activeLevel, goal, BMR});
+        const newUser = new User({
+            username,
+            email,
+            passwordHash,
+            gender,
+            age,
+            height,
+            weight,
+            activeLevel,
+            goal,
+            BMR,
+            image: DEFAULT_AVATAR
+        });
         await newUser.save();
 
         return res.status(200).json({ message: 'User created successfully' });
@@ -82,7 +102,7 @@ const login = async (req, res) => {
         const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
             expiresIn: '7d', 
         });
-
+    
         return res.status(200).json({
             message: 'Login successful',
             token,
@@ -95,7 +115,8 @@ const login = async (req, res) => {
                 height: user.height,
                 weight: user.weight,
                 activeLevel: user.activeLevel,
-                goal: user.goal
+                goal: user.goal,
+                image: user.image,
             },
         });
     } catch (error) {
@@ -127,3 +148,20 @@ const getCurrentUser = async (req, res) => {
 }
 
 module.exports = { checkIfUserExist, signUp, login, getCurrentUser };
+
+const fs = require('fs');
+
+function imageToBase64(filePath) {
+  try {
+    // Read the image file
+    const imageBuffer = fs.readFileSync(filePath);
+    
+    // Convert the image buffer to a Base64 string
+    const base64String = imageBuffer.toString('base64');
+    
+    return base64String;
+  } catch (error) {
+    console.error("Error converting image to Base64:", error);
+    return null;
+  }
+}
