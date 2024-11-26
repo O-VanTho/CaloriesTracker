@@ -61,6 +61,7 @@ function page() {
         console.log("Error fetch post content");
       }
     }
+    
 
     fetchPost();
   }, [postId])
