@@ -1,0 +1,18 @@
+.btn_nav{
+    flex: 1 1 0%;
+    text-align: center;
+}
+
+.btn_nav:hover{
+    color: #77c847;
+}
+
+.camera_btn{
+    flex: 1 1 0%;
+    text-align: center;
+    margin: 2px 0;
+    height: -webkit-fill-available;
+    color: white;
+    background: linear-gradient(135deg, rgba(118, 200, 71, 1) 0%, rgb(75, 147, 78) 100%);
+    border-radius: 12px;
+}
