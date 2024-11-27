@@ -7,7 +7,6 @@ import { RxUpload } from "react-icons/rx";
 import { IoClose } from "react-icons/io5";
 
 const FoodScannerCam = ({ onClose }) => {
-  const [dialog, setDialog] = useState(false);
 
   const [user, setUser] = useState(null);
   useEffect(() => {
@@ -83,7 +82,7 @@ const FoodScannerCam = ({ onClose }) => {
 
   const processFoodDetection = async (imageSrc) => {
     if (imageSrc) {
-
+      console.log("run 1")
       try {
         const imgElement = new Image();
         imgElement.src = imageSrc;

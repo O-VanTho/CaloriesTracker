@@ -35,6 +35,7 @@ app.post('/create_post', async (req, res) => {
             content: postData.content,
             difficulty: postData.difficulty,
             rate: 0,
+            likes: [],
             image: postData.image
         });
 
@@ -51,7 +52,9 @@ app.get('/get-posts/:category', async (req, res) => {
 
     try {
         const posts = await Post.find({ category })
-            .populate({ path: 'author', select: 'username' });
+            .populate(
+                { path: 'author', select: 'username' },
+            );
 
         res.status(200).json({ message: "Get Posts success", posts: posts });
     } catch (error) {
@@ -66,13 +69,36 @@ app.get('/get-post/:postId', async (req, res) => {
     try {
         const post = await Post.findById(postId).populate({ path: 'author', select: 'username' });
 
-        res.status(200).json({message: "Get post success", post: post})
+        res.status(200).json({ message: "Get post success", post: post })
     } catch (error) {
         console.log("Error get post content", error);
         res.status(500).json({ message: "Error" })
     }
 })
-// 
+
+app.post('/like-post', async (req, res) => {
+    const { postId, userId } = req.body;
+
+    try {
+        const post = await Post.findById(postId);
+
+        if (!post.likes.includes(userId)) {
+            post.likes.push(userId);
+            post.rate += 1;
+        } else {
+            post.likes.pull(userId);
+            post.rate -= 1;
+        }
+
+        await post.save();
+
+        res.status(200).json({ message: "Update like post success" })
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ message: "Error api like post" })
+    }
+})
+///////
 app.post('/get-meal-from-diary', async (req, res) => {
     try {
         const { diaryId, mealType } = req.body;
@@ -106,12 +132,12 @@ app.post('/get-meal-from-diary', async (req, res) => {
 app.post('/get-diary-week', async (req, res) => {
     try {
         const { userId } = req.body;
-        
+
         const now = new Date();
         const dayOfWeek = now.getUTCDay(); // Get the current day in UTC
         const startOfWeek = new Date(now);
         startOfWeek.setUTCDate(now.getUTCDate() - (dayOfWeek === 0 ? 6 : dayOfWeek - 1)); // If it's Sunday (0), go back 6 days, otherwise subtract (dayOfWeek - 1)
-        
+
         // Create an array of promises to fetch each day's diary entry
         const diaryPromises = Array.from({ length: 7 }, (_, i) => {
             const diaryDate = new Date(startOfWeek);
@@ -250,7 +276,7 @@ app.post('/add-food-to-diary/:diaryDate/:mealType', async (req, res) => {
 
             diary.totalCalories += totalCalories;
             diary.totalProteins += totalProteins,
-            diary.totalCarbs += totalCarbs;
+                diary.totalCarbs += totalCarbs;
             diary.totalFats += totalFats;
 
             await diary.save();

@@ -1,6 +1,6 @@
 'use client';
 import { FaStar } from "react-icons/fa";
-import { GoHeart } from "react-icons/go";
+import { FaHeart } from "react-icons/fa";
 import { IoMdArrowBack } from "react-icons/io"
 import axios from 'axios';
 import React, { useEffect, useState } from 'react'
@@ -9,6 +9,7 @@ function page() {
   const [postId, setPostId] = useState(null);
   const [post, setPost] = useState(null);
   const [user, setUser] = useState(null);
+  const [likedPost, setLikedPost] = useState(false);
 
   useEffect(() => {
     if (window === undefined) {
@@ -48,28 +49,43 @@ function page() {
     fetchUser();
   }, []);
 
+  const fetchPost = async () => {
+    try {
+      const res = await axios.get(`http://localhost:5000/get-post/${postId}`);
+      setPost(res.data.post);
+
+      if(res.data.post.likes.includes(user._id)){
+        setLikedPost(true);
+      }else{
+        setLikedPost(false);
+      }
+    } catch (error) {
+      console.log("Error fetch post content", error);
+    }
+  }
   useEffect(() => {
-    if (!postId) {
+    if (!postId || !user) {
       return;
     }
 
-    const fetchPost = async () => {
-      try {
-        const res = await axios.get(`http://localhost:5000/get-post/${postId}`);
-        setPost(res.data.post);
-      } catch (error) {
-        console.log("Error fetch post content");
-      }
-    }
-    
-
     fetchPost();
-  }, [postId])
+  }, [postId, user])
 
   const onClose = () => {
     window.history.back();
   }
 
+  const handleLikePost = async () => {
+    try {
+      const res = await axios.post("http://localhost:5000/like-post",{postId: postId, userId: user._id});
+      
+      if(res.status === 200){
+        fetchPost();
+      }
+    } catch (error) {
+      console.log("Error handle like post", error);
+    }
+  }
 
   if (post) {
     return (
@@ -86,8 +102,8 @@ function page() {
             <div className="flex justify-between items-center">
               <h1 className='text-2xl'>{post.title}</h1>
 
-              <button>
-                <GoHeart className="" size={30} />
+              <button onClick={handleLikePost}>
+                <FaHeart className={`${likedPost ? 'text-red-500' : 'text-gray-200'}`} size={30} />
               </button>
             </div>
 
@@ -101,7 +117,7 @@ function page() {
           </div>
 
           <div className="flex justify-between border-t border-gray-400 pt-5">
-            <p>Time Cost: {post.timeCost}</p>
+            <p>Time Cost: {post.timeCost} minutes</p>
             <p>Difficulty: {post.difficulty}</p>
           </div>
 
