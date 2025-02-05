@@ -24,7 +24,7 @@ function homePage() {
 
       if (!token) {
         console.log("Error token");
-        window.location.href = '/CaloriesTracker/login';
+        window.location.href = './login';
         return;
       }
 
@@ -39,7 +39,7 @@ function homePage() {
         if (error.response && error.response.status === 401) {
           console.log('Token expired or invalid, redirecting to login...');
           localStorage.removeItem('token');
-          window.location.href = '/CaloriesTracker/login';
+          window.location.href = './login';
         } else {
           console.log("Other error:", error);
         }
