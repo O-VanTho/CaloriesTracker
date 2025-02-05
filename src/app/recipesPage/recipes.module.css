@@ -1,0 +1,49 @@
+.container {
+    min-height: 100vh;
+    background: linear-gradient(to bottom, #6fbd42 30%, white 20%);
+    background-attachment: fixed;
+    background-size: cover;
+}
+
+
+@keyframes animate-in {
+    from {
+        opacity: 0.2;
+        scale: 0.8;
+        translate: 0 10%;
+    }
+}
+
+.photo {
+    animation: animate-in ease-in both;
+    animation-timeline: view();
+    animation-range: entry 25% cover calc(50% - 10vh);
+}
+
+.photos {
+    display: flex;
+    flex-direction: column;
+    padding: 1em 0;
+    gap: 1 rem;
+    width: 100%;
+}
+
+.photo {
+    transform-origin: 50% 100%;
+    overflow: hidden;
+    background: white;
+    display: flex;
+    align-items: end;
+    width: min-content;
+    max-width: 100%;
+    margin: 0 auto;
+    background: transparent;
+    width: 100%;
+}
+
+/* li:nth-child(5n),
+li:nth-child(7n + 3),
+li:nth-child(3n) {
+    grid-row: span 2;
+    grid-column: span 2;
+} */
