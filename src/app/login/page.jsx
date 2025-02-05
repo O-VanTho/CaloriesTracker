@@ -22,7 +22,7 @@ const page = () => {
 
             if(res.status == 200){
                 localStorage.setItem('token', res.data.token);
-                window.location.href = '/';   
+                window.location.href = './';   
             }
         } catch (error) {
             console.log("Fail to Login", error);
@@ -34,7 +34,7 @@ const page = () => {
             
             <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-xs text-gray-600 z-10">
                 <div className="text-center mb-6">
-                    <a href="/sign-up" className="text-gray-500 px-3 py-2 font-semibold focus:outline-none">
+                    <a href="./sign-up" className="text-gray-500 px-3 py-2 font-semibold focus:outline-none">
                         Sign Up
                     </a>
                     <button className="text-[#77c847] px-3 py-2 font-semibold border-b-2 border-[#77c847] focus:outline-none">

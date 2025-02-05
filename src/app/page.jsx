@@ -118,13 +118,13 @@ function homePage() {
       <div className='flex justify-between items-center h-[140px] m-[6px] gap-2'>
         <Banner
           title='My Diary'
-          href='/diaryPage'
+          href='./diaryPage'
           backgroundImage='/images/diary-banner.jpg'
           customCss='diary_overlay'
         />
         <Banner
           title='recipies'
-          href='/recipesPage'
+          href='./recipesPage'
           backgroundImage='/images/recipes-banner.jpeg'
           customCss='recipies_overlay'
         />

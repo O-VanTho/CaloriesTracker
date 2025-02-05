@@ -16,7 +16,7 @@ const FoodScannerCam = ({ onClose }) => {
 
       if (!token) {
         console.log("Error token");
-        window.location.href = '/CaloriesTracker/login';
+        window.location.href = './login';
         return;
       }
 
@@ -31,7 +31,7 @@ const FoodScannerCam = ({ onClose }) => {
         if (error.response && error.response.status === 401) {
           console.log('Token expired or invalid, redirecting to login...');
           localStorage.removeItem('token');
-          window.location.href = '/CaloriesTracker/login';
+          window.location.href = './login';
         } else {
           console.log("Other error:", error);
         }
