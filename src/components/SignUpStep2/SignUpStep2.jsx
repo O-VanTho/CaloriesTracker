@@ -30,7 +30,7 @@ const SignUpStep2 = ({ formData, prevToStep1 }) => {
             const res = await axios.post('http://localhost:5000/create-user', { formData, userInfo });
 
             if(res.status === 200){
-                window.location.href = '/login';
+                window.location.href = '/CaloriesTracker/login';
             }
         } catch (error) {
             console.error('Error creating user: ', error);
