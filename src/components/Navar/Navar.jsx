@@ -21,11 +21,11 @@ function Navar() {
     <nav className="fixed bottom-0 w-full bg-white shadow-lg border-t border-gray-200">
       <div className="flex justify-between items-center h-[4.25rem] max-w-md mx-auto gap-[12px]">
         
-        <a href='/' className={styles.btn_nav}>
+        <a href='./' className={styles.btn_nav}>
           <FaHome className={`mx-auto text-xl ${isActive('/')}`} />
         </a>
 
-        <a href='/diaryPage' className={styles.btn_nav}>
+        <a href='./diaryPage' className={styles.btn_nav}>
           <FaBook className={`mx-auto text-xl ${isActive('/diaryPage')}`} />
         </a>
 
@@ -36,11 +36,11 @@ function Navar() {
           <FaQrcode className={`mx-auto text-xl`} />
         </button>
 
-        <a href='/recipesPage' className={styles.btn_nav}>
+        <a href='./recipesPage' className={styles.btn_nav}>
           <FaUtensils className={`mx-auto text-xl ${isActive('/recipesPage')}`} />
         </a>
 
-        <a href='/settingPage' className={styles.btn_nav}>
+        <a href='./settingPage' className={styles.btn_nav}>
           <FaUser className={`mx-auto text-xl ${isActive('/settingPage')}`} />
         </a>
 

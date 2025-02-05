@@ -40,7 +40,7 @@ function SignUpStep1({nextStep}) {
                 <a className="text-[#77c847] px-3 py-2 font-semibold border-b-2 border-[#77c847] focus:outline-none">
                     Sign Up
                 </a>
-                <a href="/login" className="text-gray-500 px-3 py-2 font-semibold focus:outline-none">
+                <a href="./login" className="text-gray-500 px-3 py-2 font-semibold focus:outline-none">
                     Login In
                 </a>
             </div>
