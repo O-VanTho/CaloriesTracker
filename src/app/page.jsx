@@ -24,7 +24,7 @@ function homePage() {
 
       if (!token) {
         console.log("Error token");
-        window.location.href = '/login';
+        window.location.href = './login';
         return;
       }
 
@@ -39,7 +39,7 @@ function homePage() {
         if (error.response && error.response.status === 401) {
           console.log('Token expired or invalid, redirecting to login...');
           localStorage.removeItem('token');
-          window.location.href = '/login';
+          window.location.href = './login';
         } else {
           console.log("Other error:", error);
         }
@@ -118,13 +118,13 @@ function homePage() {
       <div className='flex justify-between items-center h-[140px] m-[6px] gap-2'>
         <Banner
           title='My Diary'
-          href='/diaryPage'
+          href='./diaryPage'
           backgroundImage='/images/diary-banner.jpg'
           customCss='diary_overlay'
         />
         <Banner
           title='recipies'
-          href='/recipesPage'
+          href='./recipesPage'
           backgroundImage='/images/recipes-banner.jpeg'
           customCss='recipies_overlay'
         />

@@ -21,7 +21,7 @@ function Page() {
 
             if (!token) {
                 console.log("Error token");
-                window.location.href = '/login';
+                window.location.href = './login';
                 return;
             }
 
@@ -36,7 +36,7 @@ function Page() {
                 if (error.response && error.response.status === 401) {
                     console.log('Token expired or invalid, redirecting to login...');
                     localStorage.removeItem('token');
-                    window.location.href = '/login';
+                    window.location.href = './login';
                 } else {
                     console.log("Other error:", error);
                 }
